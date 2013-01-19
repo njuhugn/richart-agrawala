@@ -1,0 +1,23 @@
+											Ricart and Agrawala's Algorithm
+
+	The algorithm works as follows:
+
+	When a process wants to enter a critical region, it builds a message containing the name of the critical region it wants to enter, 
+its process number and the current time. It then sends the message to all the other processes including itself. When a process 
+receives a request message from another process, the action it takes depends on its state with respect to the critical region 
+named in the message. There are three possible states:
+
+	-If the receiver is not in the critical region and does not want to enter it, it sends back an 
+	OK message to the sender (shown as Ready state in workbench).
+	
+	-If the receiver is already in the critical region, it does not reply. Instead, 
+	it queues the request (shown as In CS state in workbench).
+	
+	-If the receiver wants to enter the critical region, but has not yet done so, it compares the timestamp in the 
+	incoming message with the one contained in the message that it has sent everyone. The lowest one wins. If the 
+	incoming message is lower, the receiver sends back an OK message. If its own message has a lower timestamp, the receiver 
+	queues the incoming message and sends nothing
+
+	After sending out requests asking permission to enter a critical region, a process sits back and waits until everyone else has given 
+permission. As soon as all the permissions are in, it may enter the critical region. When it exits the critical region, 
+it sends OK messages to all processes on its queue and deletes them all from the queue.
