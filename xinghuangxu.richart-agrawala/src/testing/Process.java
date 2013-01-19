@@ -48,8 +48,7 @@ public class Process {
 
 		// process id is also used for priority (low process # == higher
 		// priority in RicartAgrawala scheme)
-		// process numbers are [1,channelCount]; since we're starting at 1 check
-		// for errors trying to access node '0'.
+		// process id are [0,channelCount-1]
 		this.prcsID = prcsID;
 
 		reqQue = new boolean[prcsCount];
@@ -68,7 +67,7 @@ public class Process {
 
 		ackQue = 1;
 
-		for (int i = 1; i <= prcsCount; i++) {
+		for (int i = 0; i < prcsCount; i++) {
 			if (i != prcsID) {
 				sendRequest(localTimeStamp, prcsID, i);
 			}
@@ -99,7 +98,7 @@ public class Process {
 		for (int i = 0; i < prcsCount; i++) {
 			if (reqQue[i]) {
 				reqQue[i] = false;
-				sendAcknowledgement(i + 1);
+				sendAcknowledgement(i);
 			}
 		}
 	}
@@ -125,7 +124,7 @@ public class Process {
 				&& ((reqTimeStamp > localTimeStamp) || (reqTimeStamp == localTimeStamp && reqPrcsID > prcsID));
 		if (bDefer) {
 			System.out.println("Deferred sending message to " + reqPrcsID);
-			reqQue[reqPrcsID - 1] = true;
+			reqQue[reqPrcsID] = true;
 		} else {
 			System.out.println("Sent reply message to " + reqPrcsID);
 			sendAcknowledgement(reqPrcsID);
@@ -142,13 +141,13 @@ public class Process {
 	
 	public void sendAcknowledgement(int ackPrcsID) {
 		System.out.println("Sending REPLY to node " + ackPrcsID);
-		writers[ackPrcsID - 1].println("REPLY," + ackPrcsID);
+		writers[ackPrcsID].println("REPLY," + ackPrcsID);
 	}
 
 	
 	public void sendRequest(int timeStamp, int prcsID, int ackPrcsID) {
 		System.out.println("Sending REQUEST to node " + (((ackPrcsID))));
-		writers[ackPrcsID - 1].println("REQUEST," + timeStamp + "," + prcsID);
+		writers[ackPrcsID].println("REQUEST," + timeStamp + "," + prcsID);
 	}
 
 	
